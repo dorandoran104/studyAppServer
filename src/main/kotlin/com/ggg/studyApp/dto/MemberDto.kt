@@ -1,8 +1,8 @@
 package com.ggg.studyApp.dto
 
 data class MemberDto(
-    var idx:Int?
-    ,var email:String
-    ,var password:String
-    ,var mobileNumber:String
+    var idx:Int? = null
+    ,var email:String? = null
+    ,var password:String? = null
+    ,var mobileNumber:String? = null
 )
