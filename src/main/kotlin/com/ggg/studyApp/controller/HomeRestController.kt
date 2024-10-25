@@ -29,9 +29,24 @@ class HomeController {
         try {
             resultObject = homeService.sendCertification(memberDto)
         }catch (ex:Exception){
-            logger.error(ex.message)
             resultObject["result"] = false
             resultObject["errMessage"] = "문자전송에 실패하였습니다."
+        }
+        return resultObject
+    }
+
+
+    @PostMapping("/existsNickname")
+    fun existsNickname(@RequestBody memberDto: MemberDto):HashMap<String,Any>{
+        val resultObject = HashMap<String,Any>()
+        try {
+            val count = homeService.existsNickname(memberDto)
+            resultObject["result"] = count == 0
+            resultObject["errMessage"] = if (count == 0) "" else "이미 사용중인 닉네임입니다."
+        }catch (ex:Exception){
+            logger.error(ex.message)
+            resultObject["result"] = false
+            resultObject["errMessage"] = "오류가 발생했습니다."
         }
         return resultObject
     }
