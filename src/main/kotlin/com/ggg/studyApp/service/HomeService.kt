@@ -3,6 +3,7 @@ package com.ggg.studyApp.service
 import com.ggg.studyApp.dto.MemberDto
 import com.ggg.studyApp.entity.Member
 import com.ggg.studyApp.repository.HomeRepository
+import com.ggg.studyApp.util.JWTUtil
 import com.ggg.studyApp.util.RandomUtil
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,7 +19,51 @@ class HomeService {
     private lateinit var randomUtil:RandomUtil
 
     @Autowired
+    private lateinit var jwtUtil: JWTUtil
+
+    @Autowired
     private lateinit var homeRepository: HomeRepository
+
+    /**
+     * @param memberDto.id, memberDto.password
+     */
+    fun login(memberDto: MemberDto):HashMap<String,Any>{
+        val resultObj = HashMap<String,Any>()
+        try {
+            val findMember = homeRepository.findById(memberDto.id!!)
+            //조회가 되었는지 확인
+            if(findMember.id == null){
+                resultObj["result"] = false
+                resultObj["errMessage"] = "아이디 혹은 비밀번호를 확인해 주세요"
+                return resultObj
+            }
+            val encoder = BCryptPasswordEncoder()
+            //비밀번호 일치 확인
+            if(!encoder.matches(memberDto.password,findMember.password)){
+                resultObj["result"] = false
+                resultObj["errMessage"] = "아이디 혹은 비밀번호를 확인해 주세요"
+                return resultObj
+            }
+
+            //토큰 생성
+            findMember.accessToken = jwtUtil.createToken(findMember,1)
+            findMember.refreshToken = jwtUtil.createToken(findMember,24 * 7)
+
+            homeRepository.save(Member.fromDto(findMember))
+            val data = HashMap<String,Any>()
+            data["access_token"] = findMember.accessToken!!
+            data["refresh_token"] = findMember.refreshToken!!
+            resultObj["result"] = true
+            resultObj["data"] = data
+
+        }catch (ex:Exception){
+            logger.error(ex.message)
+            resultObj["result"] = false
+            resultObj["errMessage"] = "아이디 혹은 비밀번호를 확인해 주세요"
+            return resultObj
+        }
+        return resultObj
+    }
 
     /**
      * 회원가입 > 인증문자 발송하기

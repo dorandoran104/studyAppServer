@@ -8,24 +8,39 @@ import jakarta.persistence.*
 data class Member (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var idx:Int? = null
-    ,var nickname:String? = null
-    ,var id:String? = null
-    ,var code:String? = null
-    ,var password:String? = null
-    ,var accessToken:String? = null
-    ,var refreshToken:String? = null
+    var idx:Int? = null,
+    var accessToken:String ? = null,
+    var refreshToken:String ? = null,
+    var code:String? = null,
+    var id:String? = null,
+    var password:String? = null,
+    var mobileNumber:String? = null,
+    var nickname:String? = null,
+    var fileIdx:Int? = null,
+    var createAt:String? = null,
+    var modifyAt:String? = null,
+    var deleteAt:String? = null,
+    var deleteYn:String? = null,
+    var withdrawYn:String? = null,
+    var withdrawAt:String? = null
 ){
     companion object{
         fun fromDto(memberDto: MemberDto) = Member(
             idx = memberDto.idx
-            , code = memberDto.code
-            , nickname = memberDto.nickname
-            , id = memberDto.id
-            , password = memberDto.password
             , accessToken = memberDto.accessToken
             , refreshToken = memberDto.refreshToken
-
+            , code = memberDto.code
+            , id = memberDto.id
+            , password = memberDto.password
+            , mobileNumber = memberDto.mobileNumber
+            , nickname = memberDto.nickname
+            , fileIdx = memberDto.fileIdx
+            , createAt = memberDto.createAt
+            , modifyAt = memberDto.modifyAt
+            , deleteAt = memberDto.deleteAt
+            , deleteYn = memberDto.deleteYn
+            , withdrawYn = memberDto.withdrawYn
+            , withdrawAt = memberDto.withdrawAt
         )
     }
 }

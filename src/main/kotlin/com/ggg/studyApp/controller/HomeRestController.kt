@@ -2,9 +2,11 @@ package com.ggg.studyApp.controller
 
 import com.ggg.studyApp.dto.MemberDto
 import com.ggg.studyApp.service.HomeService
+import org.apache.coyote.Response
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -20,8 +22,17 @@ class HomeController {
     private lateinit var homeService: HomeService
 
     @PostMapping("/login")
-    fun login(@RequestBody memberDto: MemberDto){
-        println(memberDto.toString())
+    fun login(@RequestBody memberDto: MemberDto):ResponseEntity<HashMap<String,Any>>{
+        var resultObject = HashMap<String,Any>()
+        try {
+            resultObject = homeService.login(memberDto)
+            return ResponseEntity.ok(resultObject)
+        }catch (ex:Exception){
+            logger.error(ex.message)
+            resultObject["result"] = false
+            resultObject["errMessage"] = "오류가 발생했습니다."
+            return ResponseEntity.internalServerError().body(resultObject)
+        }
     }
 
     /**
@@ -79,6 +90,9 @@ class HomeController {
         }
     }
 
+    /**
+     * 회원가입 마지막 단계
+     */
     @PostMapping("/signUp")
     fun signUp(@RequestBody memberDto: MemberDto):ResponseEntity<HashMap<String,Any>>{
         var resultObject= HashMap<String,Any>()
@@ -91,6 +105,13 @@ class HomeController {
             resultObject["result"] = false
             return ResponseEntity.internalServerError().body(resultObject)
         }
+    }
+
+    @GetMapping("/main")
+    fun main():ResponseEntity<HashMap<String,Any>>{
+        val resultObject = HashMap<String,Any>()
+        resultObject["result"] = true
+        return ResponseEntity.status(200).body(resultObject)
     }
 
 }
