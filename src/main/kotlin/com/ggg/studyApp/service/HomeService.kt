@@ -1,7 +1,7 @@
 package com.ggg.studyApp.service
 
 import com.ggg.studyApp.dto.MemberDto
-import com.ggg.studyApp.entity.Member
+import com.ggg.studyApp.entity.MemberEntity
 import com.ggg.studyApp.repository.HomeRepository
 import com.ggg.studyApp.util.JWTUtil
 import com.ggg.studyApp.util.RandomUtil
@@ -49,7 +49,7 @@ class HomeService {
             findMember.accessToken = jwtUtil.createToken(findMember,1)
             findMember.refreshToken = jwtUtil.createToken(findMember,24 * 7)
 
-            homeRepository.save(Member.fromDto(findMember))
+            homeRepository.save(MemberEntity.fromDto(findMember))
             val data = HashMap<String,Any>()
             data["access_token"] = findMember.accessToken!!
             data["refresh_token"] = findMember.refreshToken!!
@@ -132,8 +132,8 @@ class HomeService {
         val bcrypt = BCryptPasswordEncoder()
         val encodePassword = bcrypt.encode(memberDto.password)
         memberDto.password = encodePassword
-        val member = Member.fromDto(memberDto)
-        val saveMember = homeRepository.save(member)
+        val memberEntity = MemberEntity.fromDto(memberDto)
+        val saveMember = homeRepository.save(memberEntity)
         resultObj["result"] = saveMember.idx != null
         return resultObj
     }

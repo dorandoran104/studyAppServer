@@ -5,7 +5,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "member")
-data class Member (
+data class MemberEntity (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var idx:Int? = null,
@@ -25,7 +25,7 @@ data class Member (
     var withdrawAt:String? = null
 ){
     companion object{
-        fun fromDto(memberDto: MemberDto) = Member(
+        fun fromDto(memberDto: MemberDto) = MemberEntity(
             idx = memberDto.idx
             , accessToken = memberDto.accessToken
             , refreshToken = memberDto.refreshToken
